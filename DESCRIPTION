@@ -1,0 +1,24 @@
+Package: hmdpTillage
+Type: Package
+Title: A hierarchical Markov decision process (HMDP) used for scheduling tillage
+    operations.
+Version: 1.0
+Authors@R: person("Reza", "Pourmoayed", email = "rpourmoayed@eng.au.dk",
+                  role = c("aut", "cre"))
+Description: This packgae includes codes and data to model scheduling of tillage
+    operations using three-level HMDP.
+URL:
+BugReports:
+License: GPL (>3)
+Depends:
+    R (>= 3.1.0),
+    MDP2,
+    data.table,
+    MASS,
+    discretizeGaussian
+LazyData: TRUE
+LinkingTo: Rcpp, RcppArmadillo
+Imports:
+    Rcpp (>= 0.11.1),
+    RcppArmadillo (>= 0.7.400.2)
+RoxygenNote: 5.0.1
