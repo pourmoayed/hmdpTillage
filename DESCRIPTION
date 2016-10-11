@@ -7,8 +7,8 @@ Authors@R: person("Reza", "Pourmoayed", email = "rpourmoayed@eng.au.dk",
                   role = c("aut", "cre"))
 Description: This packgae includes codes and data to model scheduling of tillage
     operations using three-level HMDP.
-URL:
-BugReports:
+URL: https://github.com/pourmoayed/hmdpTillage
+BugReports: https://github.com/pourmoayed/hmdpTillage/issues
 License: GPL (>3)
 Depends:
     R (>= 3.1.0),
