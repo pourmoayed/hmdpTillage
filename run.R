@@ -22,5 +22,3 @@ rm(mdp)
 size<-dim(param$disAvgWat)[1]*dim(param$disSdWat)[1]*dim(param$disSdPos)[1]*dim(param$disMeanPos)[1]*dim(param$disTem)[1]*dim(param$disPre)[1]
 size*max(param$opD)*param$opNum*param$tMax
 
-
-aaa<-binInfoActions(prefix = prefix, fileA = "actionIdx.bin" )

@@ -54,12 +54,11 @@
 #' @export
 setParam<-function(
   opNum=4,
-  tMax=12,
+  tMax=25,
   opSeq=c(1,2,3,4),
-  opE=c(1,3,5,7),
-  #opL=c(13,18,21,24),
-  opL=c(6,8,10,12),
-  opD=c(2,2,2,2),
+  opD=c(5,2,2,3),
+  opE=c(1,1+opD[1],1+opD[1]+opD[2],1+opD[1]+opD[2]+opD[3]),#c(1,3,5,7),
+  opL=c(tMax-opD[4]-opD[3]-opD[2],tMax-opD[4]-opD[3],tMax-opD[4],tMax),#c(6,8,10,12),
   opDelay=c(0,0,0),
   opFixCost=c(1000,1000,1000,1000),
   watTh=c(30,40,40,50),
@@ -72,17 +71,17 @@ setParam<-function(
   costSkip= 80000,
   # centerPointsAvgWat=seq(hydroWatR+1,hydroWatS, by=5),#seq(5,60, by=6),
   # centerPointsSdWat=seq(1,8, by=2),
-  # centerPointsSdPos=seq(0.1,0.8, by=0.3),
-  # centerPointsMeanPos=seq(0.5,1.5,by=0.1),
-  # centerPointsTem=seq(15,25,by=2),
+  # centerPointsSdPos=c(0.005,0.01,0.05,0.1),
+  # centerPointsMeanPos=seq(0.7,1.3,by=0.1),
+  # centerPointsTem=seq(10,23,by=2.5),
   # centerPointsPre=c(0,dryDayTh*2, seq(1,7,by=2) ),
 
   centerPointsAvgWat=seq(hydroWatR+1,hydroWatS, by=15),#seq(5,60, by=6),
-  centerPointsSdWat=seq(1,3, by=2),
-  centerPointsSdPos=seq(0.1,0.4, by=0.3),
-  centerPointsMeanPos=seq(0.7,1.2,by=0.3),
-  centerPointsTem=seq(15,20,by=2),
-  centerPointsPre= c(0,dryDayTh*2, seq(1.5,8,by=2) ),
+  centerPointsSdWat=seq(1,8, by=4.5),
+  centerPointsSdPos=c(0.005,0.01,0.05,0.1),#seq(0.005,0.1, by=0.01),
+  centerPointsMeanPos=seq(0.7,1.3,by=0.4),
+  centerPointsTem=seq(10,23,by=5.5),
+  centerPointsPre= c(0,dryDayTh*2, seq(1.5,8,by=5) ),
 
 
   temMeanDry=19, #shoule be estimates
@@ -107,12 +106,12 @@ setParam<-function(
   gSSMW=0.01,
   gSSMV=25,
   gSSMm0=1,
-  gSSMc0=0.2,
+  gSSMc0=0.01,
   nGSSMm0=4,
   nGSSMc0=2,
   nGSSMK=20,
 
-  check = FALSE
+  check = TRUE
 ){
    model<-list(opNum=opNum)
    model$opSeq<-opSeq

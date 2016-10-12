@@ -2,7 +2,7 @@
 
 // ===================================================
 
-const double HMDP::ZERO = 4.656613e-10;   // equal 1/2147483647 (limit of int since trans pr is stored as int when build the hgf)
+const double HMDP::ZERO = 1e-3; //4.656613e-10;   // equal 1/2147483647 (limit of int since trans pr is stored as int when build the hgf)
 
 // ===================================================
 
@@ -78,49 +78,49 @@ HMDP::HMDP(const string prefix, const List paramModel): w(prefix) {
 
   // matrices for filling the rewards and transition probabilities before running the HMDP:
   prMW = vector <vector<vector< vector< vector< vector<double> > > > > >(sizeSMW,
-                                                                         vector<vector< vector< vector< vector<double> > > > >(sizeSMP,
-                                                                                                                               vector<vector< vector< vector<double> > > >(sizeSSP,
-                                                                                                                                                                           vector<vector< vector<double> > >(sizeST,
-                                                                                                                                                                                                             vector<vector<double> > (sizeSP,
-                                                                                                                                                                                                                                      vector <double>(sizeSMW) ) ) ) ) ); //prMW[iMWt][iMPt][iSPt][iTt][iPt][iMW]
+         vector<vector< vector< vector< vector<double> > > > >(sizeSMP,
+         vector<vector< vector< vector<double> > > >(sizeSSP,
+         vector<vector< vector<double> > >(sizeST,
+         vector<vector<double> > (sizeSP,
+         vector <double>(sizeSMW) ) ) ) ) ); //prMW[iMWt][iMPt][iSPt][iTt][iPt][iMW]
 
   prMP = vector< vector< vector<double> > > (sizeSMP,
-                                             vector< vector<double> >(sizeSSP,
-                                                                      vector<double>(sizeSMP) ) ); //prMP[iMPt][iSPt][iMP]
+         vector< vector<double> >(sizeSSP,
+         vector<double>(sizeSMP) ) ); //prMP[iMPt][iSPt][iMP]
 
   prSP = vector<vector< vector< vector< vector<double> > > > >(sizeSMW,
-                                                               vector<vector< vector< vector<double> > > >(sizeSSP,
-                                                                                                           vector<vector< vector<double> > >(sizeST,
-                                                                                                                                             vector<vector<double> > (sizeSP,
-                                                                                                                                                                      vector <double>(sizeSSP) ) ) ) ); // prSP[iMWt][iSPt][iTt][iPt][iSP]
+         vector<vector< vector< vector<double> > > >(sizeSSP,
+         vector<vector< vector<double> > >(sizeST,
+         vector<vector<double> > (sizeSP,
+         vector <double>(sizeSSP) ) ) ) ); // prSP[iMWt][iSPt][iTt][iPt][iSP]
 
 
   prSW = vector < vector< vector<double> > > (tMax+1,
-                                              vector< vector<double> >(sizeSSW,
-                                                                       vector<double>(sizeSSW) ) ); //prSW[t][iSWt][iSW]
+         vector< vector<double> >(sizeSSW,
+         vector<double>(sizeSSW) ) ); //prSW[t][iSWt][iSW]
 
   prT =  vector <vector< vector<double> > > (sizeST,
-                                             vector< vector<double> > (sizeSP,
-                                                                       vector<double>(sizeST) ) ); //prT[iTt][iPt][iT]
+         vector< vector<double> > (sizeSP,
+         vector<double>(sizeST) ) ); //prT[iTt][iPt][iT]
 
   prP = vector< vector<double> > (sizeSP,
-                                  vector<double>(sizeSP) ); //prP[iPt][iP]
+        vector<double>(sizeSP) ); //prP[iPt][iP]
 
   rewDo = vector <vector< vector<double> > >(opNum,
-                                             vector< vector<double> >(sizeSMW,
-                                                                      vector<double>(sizeSSW) ) ); //rewDo[op][iMWt][iSWt]
+          vector< vector<double> >(sizeSMW,
+          vector<double>(sizeSSW) ) ); //rewDo[op][iMWt][iSWt]
 
 
   int opDMax = arma::max(opD);
 
   mapL1Vector = vector< vector< vector< vector< vector< vector< vector< vector<int> > > > > > > >(opNum,
-                                                                                                  vector< vector< vector< vector< vector< vector< vector<int> > > > > > >(opDMax+1,
-                                                                                                                                                                          vector< vector< vector< vector< vector< vector<int> > > > > >(sizeSMW,
-                                                                                                                                                                                                                                        vector< vector< vector< vector< vector<int> > > > >(sizeSSW,
-                                                                                                                                                                                                                                                                                            vector< vector< vector< vector<int> > > >(sizeSMP,
-                                                                                                                                                                                                                                                                                                                                      vector< vector< vector<int> > >(sizeSSP,
-                                                                                                                                                                                                                                                                                                                                                                      vector< vector<int> >(sizeST,
-                                                                                                                                                                                                                                                                                                                                                                                            vector <int>(sizeSP) ) ) ) ) ) ) ) ; //mapL1Vector[op][d][iMW][iSW][iMP][iSP][iT][iP];
+                vector< vector< vector< vector< vector< vector< vector<int> > > > > > >(opDMax+1,
+                vector< vector< vector< vector< vector< vector<int> > > > > >(sizeSMW,
+                vector< vector< vector< vector< vector<int> > > > >(sizeSSW,
+                vector< vector< vector< vector<int> > > >(sizeSMP,
+                vector< vector< vector<int> > >(sizeSSP,
+                vector< vector<int> >(sizeST,
+                vector <int>(sizeSP) ) ) ) ) ) ) ) ; //mapL1Vector[op][d][iMW][iSW][iMP][iSP][iT][iP];
 }
 
 // ===================================================
@@ -168,9 +168,11 @@ SEXP HMDP::BuildHMDP() {
 // ===================================================
 void HMDP::BuildL1Process() {
   int t, op, iMW, iSW, iMP, iSP, iT, iP, d;
+  int LastStage=opL[opNum-1]-1;
   w.Process(); // level 2
-  for(t=1; t<tMax; t++){
-    if(t != (tMax-1) ) BuildMapL1Vector(t+1);
+  for(t=1; t<=LastStage; t++){
+    if(t != LastStage ) BuildMapL1Vector(t+1);
+    Rcout<<" day: "<<t<<endl;
     w.Stage();
     for(op=0; op<opNum; op++){
       if( (opE[op]>t) || (opL[op]<=t) ) continue;
@@ -215,6 +217,7 @@ void HMDP::BuildL1Process() {
 void HMDP::WeightsTransPos(int & opt, int & dt, int & iMWt, int & iSWt, int & iMPt, int & iSPt, int & iTt, int & iPt, int & t) {
   double pr4, prS;
   int op,d,iMW,iSW,iMP,iSP,iT,iP, id;
+  unsigned int j;
   op=opt;
   d=dt;
 
@@ -239,6 +242,9 @@ void HMDP::WeightsTransPos(int & opt, int & dt, int & iMWt, int & iSWt, int & iM
       }
     }
   }
+  arma::vec tmpPr(pr);
+  pr.clear();
+  for(j=0; j<tmpPr.size(); j++) pr.push_back((double)tmpPr[j]/(double)sum(tmpPr));
   scope.assign(pr.size(),1);
   weights.assign(2,0);
   weights[0]=1;
@@ -256,6 +262,7 @@ void HMDP::WeightsTransPos(int & opt, int & dt, int & iMWt, int & iSWt, int & iM
 void HMDP::WeightsTransDo(int & opt, int & dt, int & iMWt, int & iSWt, int & iMPt, int & iSPt, int & iTt, int & iPt, int & t) {
   double pr4, prS;
   int op,d,iMW,iSW,iMP,iSP,iT,iP, id;
+  unsigned int j;
 
   pr.clear(); index.clear(); scope.clear(); weights.assign(2,0);
   if( (dt>1) ){
@@ -281,6 +288,9 @@ void HMDP::WeightsTransDo(int & opt, int & dt, int & iMWt, int & iSWt, int & iMP
         }
       }
     }
+    arma::vec tmpPr(pr);
+    pr.clear();
+    for(j=0; j<tmpPr.size(); j++) pr.push_back((double)tmpPr[j]/(double)sum(tmpPr));
     scope.assign(pr.size(),1);
     weights[0]=1;
     weights[1]=rewDo[opt][iMWt][iSWt];
@@ -309,6 +319,9 @@ void HMDP::WeightsTransDo(int & opt, int & dt, int & iMWt, int & iSWt, int & iMP
         }
       }
     }
+    arma::vec tmpPr(pr);
+    pr.clear();
+    for(j=0; j<tmpPr.size(); j++) pr.push_back((double)tmpPr[j]/(double)sum(tmpPr));
     scope.assign(pr.size(),1);
     weights[0]=1;
     weights[1]=rewDo[opt][iMWt][iSWt];
